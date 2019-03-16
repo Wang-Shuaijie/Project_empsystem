@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsj.empsystem.dao.AgreementMapper">
+	<resultMap type="Staff" id="staffResult">
+		<id column="p_id" property="id"/>
+		<result column="p_name" property="name"/>
+	</resultMap>
+	<resultMap type="Agreement" id="agreementResult">
+		<id column="agreement_id" property="agreement_id"/>
+		<result column="agreement_btime" property="agreement_btime"/>
+		<result column="agreement_content" property="agreement_content"/>
+		<association property="staff" resultMap="staffResult"></association>
+	</resultMap>
+	
+	<select id="AgrCheckByStaffId" parameterType="java.util.HashMap" resultMap="agreementResult">
+		select a.agreement_id,a.agreement_btime,a.agreement_content,s.p_id,s.p_name
+		from staffagreement a,staff s
+		where a.p_id=s.p_id
+		<if test="name!=null">
+			and s.p_name like concat(concat('%',#{name}),'%')
+		</if>
+		order by agreement_id
+	</select>
+	
+	<select id="AgrCheckByAgrId" parameterType="java.util.HashMap" resultMap="agreementResult">
+		select *
+		from staffagreement
+		where p_id=#{id}
+	</select>
+	
+	<update id="updateAgr" parameterType="java.util.HashMap">
+		update staffagreement set 
+			agreement_btime = #{agreement.agreement_btime},
+			agreement_content = #{agreement.agreement_content}
+		where agreement_id = #{agreement.agreement_id}	
+	</update>
+	
+	<delete id="deleteAgr" parameterType="int">
+		delete from staffagreement 
+		where agreement_id = #{agreement_id}
+	</delete>
+</mapper>		

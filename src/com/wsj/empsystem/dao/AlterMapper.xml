@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsj.empsystem.dao.AlterMapper">
+	<resultMap type="Staff" id="staffResult">
+		<id column="p_id" property="id"/>
+		<result column="p_name" property="name"/>
+	</resultMap>
+	<resultMap type="Alter" id="alterResult">
+		<id column="alter_id" property="alterId"/>
+		<result column="alter_time" property="alter_btime"/>
+		<result column="alter_etime" property="alter_etime"/>
+		<result column="alter_content" property="alter_content"/>
+		<association property="staff" resultMap="staffResult"></association>
+	</resultMap>
+	
+	<select id="queryAlter" parameterType="java.util.HashMap" resultMap="alterResult">
+		select a.alter_id,s.p_name,alter_btime,alter_etime,alter_content
+		from staffalter a,staff s
+		where a.p_id = s.p_id
+		<if test="name!=null">
+			and alter_content like concat(concat('%',#{name}),'%')
+		</if>
+		order by alter_id
+	</select>
+	<insert id="insertAlter" parameterType="java.util.HashMap" >
+		insert into staffalter values(
+			staffalter_seq.nextval,
+			#{alter.staff.id},
+			#{alter.alter_btime},
+			#{alter.alter_etime},
+			#{alter.alter_content}
+		)
+	</insert>
+	<update id="updateAlter" parameterType="java.util.HashMap">
+		update staffalter set 
+			alter_btime = #{alter.alter_btime},
+			alter_etime = #{alter.alter_etime},
+			alter_content = #{alter.alter_content}
+		where alter_id = #{alter.alterId}
+	</update>
+	<delete id="deleteAlter" parameterType="int">
+		delete from staffalter 
+		where alter_id = #{id}
+	</delete>
+</mapper>

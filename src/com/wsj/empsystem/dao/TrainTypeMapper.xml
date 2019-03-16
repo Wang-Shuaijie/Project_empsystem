@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsj.empsystem.dao.TrainTypeMapper">
+<select id="findTrainTypeById" parameterType="int" resultType="TrainType">
+		select * from traintype
+		where type_code = #{id}
+	</select>
+	<select id="queryTrainType" parameterType="java.util.HashMap" resultType="TrainType">
+		select * from traintype
+		<if test="name!=null">
+			where type_name like concat(concat('%',#{name}),'%')
+		</if>
+		order by type_code
+	</select>
+	<insert id="insertTrainType" parameterType="java.util.HashMap">
+		insert into traintype values(
+			#{type.type_name},
+			traintype_seq.nextval,
+			#{type.type_info}
+		)
+	</insert>
+	<update id="updateTrainType" parameterType="java.util.HashMap">
+		update traintype set 
+			type_name = #{type.type_name},
+			type_info = #{type.type_info}
+		where type_code = #{type.type_code}
+	</update>
+	<delete id="deleteTrainType" parameterType="java.lang.Integer">
+		delete from traintype
+		where type_code = #{id}
+	</delete>
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsj.empsystem.dao.DepartmentMapper">
+	
+	<select id="findAllDep" resultType="Department">
+		select dept_id,dept_name 
+		from department
+	</select>
+	<select id="findDepByName" parameterType="java.lang.String" resultType="Department">
+		select * from department
+		where dept_name = #{name}
+	</select>
+	
+</mapper>

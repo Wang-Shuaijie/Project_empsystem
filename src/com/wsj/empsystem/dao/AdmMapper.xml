@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsj.empsystem.dao.AdmMapper">
+	<select id="queryAdm" parameterType="Administrator" resultType="Administrator">
+		select admin_id admId,admin_password admPassword,admin_username admUserName
+		from admin
+		where admin_username=#{admUserName}
+			and admin_password=#{admPassword}
+	</select>
+	
+	<insert id="insertAdm" parameterType="Administrator">
+	
+	</insert>
+	
+</mapper>

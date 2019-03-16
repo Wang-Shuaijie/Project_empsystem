@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsj.empsystem.dao.PositionMapper">
+	<resultMap type="Department" id="deptResult">
+		<id column="dept_id" property="dept_id"/>
+		<result column="dept_name" property="dept_name"/>
+	</resultMap> 
+	<resultMap type="Position" id="posResult">
+		<id column="pos_id" property="pos_id"/>
+		<result column="pos_name" property="pos_name"/>
+		<association property="department" resultMap="deptResult"/>
+	</resultMap>
+	<select id="findPosByDept" parameterType="Department" resultMap="posResult">
+		select * from position
+		where dept_id=#{dept_id}
+	</select>
+	<select id="findPosByNameAndDept" parameterType="java.util.HashMap" resultMap="posResult">
+		select * from position
+		where dept_id=#{department.dept_id}
+		and pos_name = #{pos_name}
+	</select>
+</mapper>

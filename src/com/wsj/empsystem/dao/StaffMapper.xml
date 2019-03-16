@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsj.empsystem.dao.StaffMapper">
+	<resultMap type="Department" id="DepartmentResult">
+		<id column="dept_id" property="dept_id"/>
+		<result column="dept_name" property="dept_name"/>
+	</resultMap>
+	
+	<resultMap type="Position" id="PositionResult">
+		<id column="pos_id" property="pos_id"/>
+		<result column="pos_name" property="pos_name"/>
+	</resultMap>
+	
+	<resultMap type="Staff" id="StaffResult">
+		<id column="p_id" property="id"/>
+		<result column="p_name" property="name"/>
+		<result column="sex" property="sex"/>
+		<result column="degree" property="degree"/>
+		<result column="state" property="state"/>
+		<result column="username" property="username"/>
+		<result column="password" property="password"/>
+		<association property="department" resultMap="DepartmentResult"></association>
+		<association property="position" resultMap="PositionResult"></association>
+	</resultMap>
+	
+	<select id="queryAll" parameterType="java.util.HashMap" resultMap="StaffResult">
+		select *
+		from staff s,department d,position p
+		where s.dept_id=d.dept_id
+			and s.pos_id=p.pos_id
+		<if test="name!=null">
+			and p_name like concat(concat('%',#{name}),'%')
+		</if>
+		order by p_id
+	</select>
+	
+	<select id="checkUser" parameterType="Staff" resultType="Staff">
+		select username,password 
+		from staff
+		where username=#{username}
+			and password=#{password} 
+	</select>
+	
+	<select id="findStaffById" parameterType="Integer" resultType="Staff">
+		select *
+		from staff
+		where p_id=#{id} 
+	</select>
+	
+	<insert id="insertStaff" parameterType="Staff">
+		<!-- 添加顺序按表中列的顺序 -->
+		insert into staff values(
+			staff_seq.nextval,
+			#{name},
+			#{sex},
+			#{degree},
+			#{position.pos_id},
+			#{state},
+			#{department.dept_id},
+			#{username},
+			#{password}
+		)
+	</insert>
+	
+	<update id="updateStaff" parameterType="Staff">
+		update staff set 
+			p_name=#{name},
+			sex = #{sex},
+			degree = #{degree},
+			pos_id = #{position.pos_id},
+			state = #{state},
+			dept_id = #{department.dept_id},
+			username = #{username},
+			password = #{password} 
+		where p_id = #{id}
+	</update>
+	
+	<delete id="deleteStaff" parameterType="Integer">
+		delete from staff where p_id=#{id}
+	</delete>
+</mapper>

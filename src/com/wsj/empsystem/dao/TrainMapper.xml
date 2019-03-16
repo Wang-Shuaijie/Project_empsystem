@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsj.empsystem.dao.TrainMapper">
+<resultMap type="TrainType" id="trainTypeResult">
+		<id column="type_code" property="type_code"/>
+		<result column="type_name" property="type_name"/>
+		<result column="type_info" property="type_info"/>
+	</resultMap>
+	<resultMap type="Staff" id="staffResult">
+		<id column="p_id" property="id"/>
+		<result column="p_name" property="name"/>
+	</resultMap>
+	<resultMap type="Train" id="trainResult">
+		<id column="train_id" property="train_id"/>
+		<result column="train_btime" property="train_btime"/>
+		<result column="train_etime" property="train_etime"/>
+		<result column="train_experience" property="train_experience"/>
+		<association property="staff" resultMap="staffResult"></association>
+		<association property="trainType" resultMap="trainTypeResult"></association>
+	</resultMap>
+	<select id="queryTrain" parameterType="java.util.HashMap" resultMap="trainResult">
+		select train_id,train_btime,train_etime,train_expense,
+		t2.type_code,t2.type_name,s.p_id,s.p_name
+		from train t1,traintype t2,staff s
+		where t1.p_id = s.p_id
+		and t1.type_code = t2.type_code
+		<if test="name!=null">
+			and s.p_name like concat(concat('%',#{name}),'%')
+		</if>
+		order by train_id
+	</select>
+	<insert id="insertTrain" parameterType="java.util.HashMap">
+		insert into train values(
+			train_seq.nextval,
+			#{train.trainType.type_code},
+			#{train.train_btime},
+			#{train.train_etime},
+			#{train.train_expense},
+			#{train.staff.id}
+		)
+	</insert>
+	<update id="updateTrain" parameterType="java.util.HashMap">
+		update train set 
+			train_btime = #{train.train_btime},
+			train_etime = #{train.train_etime},
+			train_experience = #{train.train_expense}
+		where train_id = #{train.train_id}
+	</update>
+	<delete id="deleteTrain" parameterType="java.lang.Integer">
+		delete from train 
+		where train_id = #{train_id}
+	</delete>
+</mapper>
